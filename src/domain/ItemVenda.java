@@ -1,17 +1,23 @@
 package domain;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 public class ItemVenda {
 
     private Produto produto;
     private int quantidade;
-    private double subtotal;
+    private BigDecimal subtotal;
 
-    public ItemVenda(Produto produto, int quantidade, double subtotal) {
+    public ItemVenda(Produto produto, int quantidade, BigDecimal subtotal) {
         this.produto = produto;
-        this.quantidade = quantidade;
-        this.subtotal = subtotal;
+        if (quantidade < 0){
+            throw new IllegalArgumentException("A quantidade noã pode ser negativa.");
+        } this.quantidade = quantidade;
+        if (subtotal.doubleValue() < 0){
+            throw new IllegalArgumentException("O subtotal não pode ser negativo");
+        }
+        this.subtotal = calcularSubtotal();
     }
 
     public Produto getProduto() {
@@ -30,14 +36,13 @@ public class ItemVenda {
         this.quantidade = quantidade;
     }
 
-    public double getSubtotal() {
+    public BigDecimal getSubtotal() {
         return subtotal;
     }
 
-    public void setSubtotal(double subtotal) {
-        this.subtotal = subtotal;
+    public BigDecimal calcularSubtotal(){
+        return produto.getPreco().multiply(BigDecimal.valueOf(quantidade));
     }
-
     @Override
     public String toString() {
         return "ItemVenda{" +
@@ -48,7 +53,7 @@ public class ItemVenda {
     }
 
     public String toCSV() {
-        return String.format("%s,%d,%d", produto.get(nome),quantidade,subtotal);
+        return String.format("%s,%d,%.2f", produto.getNome(),quantidade,subtotal);
     }
 
     @Override
@@ -62,5 +67,6 @@ public class ItemVenda {
     public int hashCode() {
         return Objects.hashCode(produto);
     }
+
 
 }
