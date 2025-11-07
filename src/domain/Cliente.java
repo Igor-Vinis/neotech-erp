@@ -68,7 +68,6 @@ public class Cliente {
         if (partes.length != 4){
             throw new IllegalArgumentException("Linha mal formatada. Espera 4 colunas, mas encontrou: " + partes.length);
         }
-
         try{
             Long id = Long.parseLong(partes[0]);
             String nome = partes[1];

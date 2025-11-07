@@ -1,5 +1,6 @@
 package domain;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -8,10 +9,10 @@ public class Produto {
     private static final AtomicLong CONTADOR_ID = new AtomicLong(0);
     private final long id;
     private String nome;
-    private double preco;
+    private BigDecimal preco;
     private int estoque;
 
-    public Produto(long id, String nome, double preco, int estoque) {
+    public Produto(long id, String nome, BigDecimal preco, int estoque) {
         this.id = CONTADOR_ID.incrementAndGet();
         this.nome = nome;
         this.preco = preco;
@@ -30,11 +31,11 @@ public class Produto {
         this.nome = nome;
     }
 
-    public double getPreco() {
+    public BigDecimal getPreco() {
         return preco;
     }
 
-    public void setPreco(double preco) {
+    public void setPreco(BigDecimal preco) {
         this.preco = preco;
     }
 
@@ -57,7 +58,7 @@ public class Produto {
     }
 
     public String toCSV(){
-        return String.format("%d,%s,%d,%d", id, nome, preco, estoque);
+        return String.format("%d,%s,%s,%d", id, nome, preco, estoque);
     }
 
     public Produto fromCSV(String linha){
@@ -71,7 +72,7 @@ public class Produto {
         try {
             long id = Long.parseLong(partes[0]);
             String nome = partes[1];
-            double preco = Double.parseDouble(partes[2]);
+            BigDecimal preco = new BigDecimal(partes[2]); //Não sei parsear
             int estoque = Integer.parseInt(partes[3]);
             return new Produto(id, nome, preco, estoque);
         } catch (NumberFormatException e){

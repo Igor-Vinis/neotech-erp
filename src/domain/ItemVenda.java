@@ -9,7 +9,7 @@ public class ItemVenda {
     private int quantidade;
     private BigDecimal subtotal;
 
-    public ItemVenda(Produto produto, int quantidade, BigDecimal subtotal) {
+    public ItemVenda(Produto produto, int quantidade) {
         this.produto = produto;
         if (quantidade < 0){
             throw new IllegalArgumentException("A quantidade noã pode ser negativa.");
