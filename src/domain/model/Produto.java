@@ -86,7 +86,7 @@ public class Produto {
             BigDecimal preco = new BigDecimal(partes[2]); //Não sei parsear
             int estoque = Integer.parseInt(partes[3]);
             return new Produto(id, nome, preco, estoque);
-        } catch (IllegalArgumentException | NumberFormatException e){
+        } catch (IllegalArgumentException e){
             throw new IllegalArgumentException("Erro ao tentar parsear os números na linha: " + linha, e);
         }
     }
