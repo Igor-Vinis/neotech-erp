@@ -1,23 +1,36 @@
-package domain;
+package domain.model;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.UUID;
 
 public class ItemVenda {
 
     private Produto produto;
     private int quantidade;
-    private BigDecimal subtotal;
+    private UUID idVenda;
 
     public ItemVenda(Produto produto, int quantidade) {
         this.produto = produto;
         if (quantidade < 0){
             throw new IllegalArgumentException("A quantidade noã pode ser negativa.");
         } this.quantidade = quantidade;
-        if (subtotal.doubleValue() < 0){
-            throw new IllegalArgumentException("O subtotal não pode ser negativo");
-        }
-        this.subtotal = calcularSubtotal();
+    }
+
+    public ItemVenda(Produto produto, int quantidade, UUID idVenda){
+        this.produto = produto;
+        if (quantidade < 0){
+            throw new IllegalArgumentException("A quantidade noã pode ser negativa.");
+        } this.quantidade = quantidade;
+        this.idVenda = idVenda;
+    }
+
+    public UUID getIdVenda() {
+        return idVenda;
+    }
+
+    public void setIdVenda(UUID idVenda) {
+        this.idVenda = idVenda;
     }
 
     public Produto getProduto() {
@@ -37,23 +50,23 @@ public class ItemVenda {
     }
 
     public BigDecimal getSubtotal() {
-        return subtotal;
+        if(produto == null || produto.getPreco() == null){
+            return BigDecimal.ZERO;
+        }
+        return produto.getPreco().multiply(BigDecimal.valueOf(this.quantidade));
     }
 
-    public BigDecimal calcularSubtotal(){
-        return produto.getPreco().multiply(BigDecimal.valueOf(quantidade));
-    }
     @Override
     public String toString() {
         return "ItemVenda{" +
                 "produto=" + produto +
                 ", quantidade=" + quantidade +
-                ", subtotal=" + subtotal +
+                ", subtotal=" + getSubtotal() +
                 '}';
     }
 
     public String toCSV() {
-        return String.format("%s,%d,%.2f", produto.getNome(),quantidade,subtotal);
+        return String.format("%s,%d,%.2f", produto.getNome(),quantidade,getSubtotal());
     }
 
     @Override
@@ -67,6 +80,5 @@ public class ItemVenda {
     public int hashCode() {
         return Objects.hashCode(produto);
     }
-
 
 }

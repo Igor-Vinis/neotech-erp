@@ -1,26 +1,36 @@
-package domain;
+package domain.model;
 
 import java.math.BigDecimal;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 
 public class Produto {
 
-    private static final AtomicLong CONTADOR_ID = new AtomicLong(0);
-    private final long id;
+    private UUID id;
     private String nome;
     private BigDecimal preco;
     private int estoque;
 
-    public Produto(long id, String nome, BigDecimal preco, int estoque) {
-        this.id = CONTADOR_ID.incrementAndGet();
+//    CONSTRUTOR PARA NOVOS PRODUTOS
+    public Produto(String nome, BigDecimal preco, int estoque) {
+        this.nome = nome;
+        this.preco = preco;
+        this.estoque = estoque;
+    }
+//    CONSTRUTOR PARA PRODUTOS JÁ CADASTRADOS
+    public Produto(UUID id, String nome, BigDecimal preco, int estoque){
+        this.id = id;
         this.nome = nome;
         this.preco = preco;
         this.estoque = estoque;
     }
 
-    public long getId() {
+    public UUID getId() {
         return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -58,10 +68,11 @@ public class Produto {
     }
 
     public String toCSV(){
-        return String.format("%d,%s,%s,%d", id, nome, preco, estoque);
+        String idString = (this.id == null) ? "" : this.id.toString();
+        return String.format("%s,%s,%s,%d", idString, nome, preco, estoque);
     }
 
-    public Produto fromCSV(String linha){
+    public static Produto fromCSV(String linha){
         if (linha == null || linha.isEmpty()){
             throw new IllegalArgumentException("A linha não pode ser nula.");
         }
@@ -70,12 +81,12 @@ public class Produto {
             throw new IllegalArgumentException("Linha mal formatada, esperava 4 colunas, mas havia: " + partes.length);
         }
         try {
-            long id = Long.parseLong(partes[0]);
+            UUID id = partes[0].isEmpty() ? null : UUID.fromString(partes[0]);
             String nome = partes[1];
             BigDecimal preco = new BigDecimal(partes[2]); //Não sei parsear
             int estoque = Integer.parseInt(partes[3]);
             return new Produto(id, nome, preco, estoque);
-        } catch (NumberFormatException e){
+        } catch (IllegalArgumentException | NumberFormatException e){
             throw new IllegalArgumentException("Erro ao tentar parsear os números na linha: " + linha, e);
         }
     }
@@ -84,7 +95,7 @@ public class Produto {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Produto produto = (Produto) o;
-        return id == produto.id;
+        return Objects.equals(id, produto.id);
     }
 
     @Override

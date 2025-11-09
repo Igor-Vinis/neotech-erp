@@ -1,4 +1,4 @@
-package domain;
+package domain.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -6,30 +6,36 @@ import java.util.*;
 
 public class Venda {
 
-    private Long id;
-    private LocalDateTime data;
-    private Cliente cliente;
+    private UUID id;
+    private final LocalDateTime data;
+    private final Cliente cliente;
     private BigDecimal total = BigDecimal.ZERO;
     private final Map<Produto, ItemVenda> itens = new LinkedHashMap<>();
 
-    public Venda() {
-    }
 
-    public Venda(Cliente cliente, LocalDateTime data, Map<Produto, ItemVenda> itens, BigDecimal total) {
+    public Venda(Cliente cliente, LocalDateTime data) {
         if (cliente == null || data == null){
             throw new IllegalArgumentException("O cliente e a data não podem ser nulos.");
         }
+        this.cliente = cliente;
+        this.data = data;
+    }
+    public Venda(UUID id, Cliente cliente, LocalDateTime data, Map<Produto, ItemVenda> itens, BigDecimal total) {
+        if (cliente == null || data == null){
+            throw new IllegalArgumentException("O cliente e a data não podem ser nulos.");
+        }
+        this.id = id;
         this.cliente = cliente;
         this.data = data;
         this.total = total;
         this.itens.putAll(itens);
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id){
+    public void setId(UUID id){
         if (this.id != null){
             throw new IllegalArgumentException("Não é possível modificar o Id de uma compra já realizada.");
         } this.id = id;
@@ -37,12 +43,6 @@ public class Venda {
 
     public LocalDateTime getData() {
         return data;
-    }
-
-    public void setData(LocalDateTime data) {
-        if (this.data != null){
-            throw new IllegalArgumentException("Não é possível modificar a data de uma compra já realizada.");
-        } this.data = data;
     }
 
     public Cliente getCliente() {

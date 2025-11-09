@@ -1,29 +1,36 @@
-package domain;
+package domain.model;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 
 public class Cliente {
 
-    private static final AtomicLong CONTADOR_ID = new AtomicLong(0);
-    private final long id;
+    private UUID id;
     private String nome;
     private String email;
     private String telefone;
 
-    public Cliente(){
-
-    }
-
-    public Cliente(Long id, String nome, String email, String telefone) {
-        this.id = CONTADOR_ID.incrementAndGet();
+//  CONSTRUTOR PARA CLIENTES NOVOS
+    public Cliente(String nome, String email, String telefone) {
         this.nome = nome;
         this.email = email;
         this.telefone = telefone;
     }
 
-    public long getId() {
+//   CONSTRUTOR PARA CLIENTE JÁ CADASTRADOS
+    public Cliente(UUID id, String nome, String email, String telefone){
+        this.id = id;
+        this.nome = nome;
+        this.email = email;
+        this.telefone = telefone;
+    }
+
+    public UUID getId() {
         return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -61,7 +68,8 @@ public class Cliente {
     }
 
     public String toCSV(){
-        return String.format("%d,%s,%s,%s", id, nome, email, telefone);
+        String idString = (this.id == null) ? "" : this.id.toString();
+        return String.format("%s,%s,%s,%s", idString, nome, email, telefone);
     }
 
     public static Cliente fromCSV(String linha){
@@ -73,12 +81,12 @@ public class Cliente {
             throw new IllegalArgumentException("Linha mal formatada. Espera 4 colunas, mas encontrou: " + partes.length);
         }
         try{
-            Long id = Long.parseLong(partes[0]);
+            UUID id = partes[0].isEmpty() ? null : UUID.fromString(partes[0]);
             String nome = partes[1];
             String email = partes[2];
             String telefone = partes[3];
             return new Cliente(id, nome, email, telefone);
-        } catch (NumberFormatException e){
+        } catch (IllegalArgumentException e){
             throw new IllegalArgumentException("Erro ao parsear número na linha CSV: " + linha, e);
         }
     }
@@ -87,7 +95,7 @@ public class Cliente {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Cliente cliente = (Cliente) o;
-        return id == cliente.id && Objects.equals(email, cliente.email);
+        return Objects.equals(id, cliente.id);
     }
 
     @Override
