@@ -83,5 +83,7 @@ public class Venda {
         }
     }
 
+    //TODO Método fromCSV
+
 
 }

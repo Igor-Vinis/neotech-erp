@@ -69,6 +69,9 @@ public class ItemVenda {
         return String.format("%s,%d,%.2f", produto.getNome(),quantidade,getSubtotal());
     }
 
+
+//    TODO Método fromCSV
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;

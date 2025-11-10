@@ -1,6 +1,6 @@
 package domain.repository;
 
-import domain.Cliente;
+import domain.model.Cliente;
 
 import java.util.Optional;
 
