@@ -2,13 +2,10 @@ package infrastructure.persistence;
 
 import domain.model.Cliente;
 import domain.repository.ClienteRepository;
-
-import java.rmi.server.UID;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class ClienteFileDAO implements ClienteRepository{
 
@@ -42,8 +39,7 @@ public class ClienteFileDAO implements ClienteRepository{
         List<String> linhas = filerManager.lerTodasLinhas(path);
         var novaLista = linhas.stream()
                 .filter(l -> {var c = Cliente.fromCSV(l);
-                    boolean manter = !(Objects.equals(id, c.getId()));
-                    return manter;})
+                    return !(Objects.equals(id, c.getId()));})
                 .toList();
 
         filerManager.escreverLinhas(path,novaLista);
@@ -52,8 +48,7 @@ public class ClienteFileDAO implements ClienteRepository{
     @Override
     public List<Cliente> buscarTodos() {
         List<String> linhas = filerManager.lerTodasLinhas(path);
-        List<Cliente> clientes = linhas.stream().map(Cliente::fromCSV).toList();
-        return clientes;
+        return linhas.stream().map(Cliente::fromCSV).toList();
     }
 
     @Override

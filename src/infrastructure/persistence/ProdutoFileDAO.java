@@ -19,37 +19,30 @@ public class ProdutoFileDAO implements ProdutoRepository {
     public List<Produto> buscarPorNome(String nome) {
 
         List<String> linhas = filemanager.lerTodasLinhas(path);
-        List<Produto> produtos = linhas.stream()
+        return linhas.stream()
                 .map(Produto::fromCSV)
-                .filter(p -> {boolean manter = p.getNome().toLowerCase().contains(nome.toLowerCase());
-                    return manter;})
+                .filter(p -> p.getNome().toLowerCase().contains(nome.toLowerCase()))
                 .toList();
-        return produtos;
     }
 
     @Override
     public List<Produto> buscarEstoqueAbaixoDe(int estoque) {
 
         List<String> linhas = filemanager.lerTodasLinhas(path);
-        var lista = linhas.stream()
+        return linhas.stream()
                 .map(Produto::fromCSV)
-                .filter(p -> {
-                    return (p.getEstoque() < estoque);})
+                .filter(p -> (p.getEstoque() < estoque))
                 .toList();
-        return lista;
     }
 
     @Override
     public List<Produto> buscarPorPrecoNoIntervalo(BigDecimal minimo, BigDecimal maximo) {
 
         var linhas = filemanager.lerTodasLinhas(path);
-        var produtos = linhas.stream()
+        return linhas.stream()
                 .map(Produto::fromCSV)
-                .filter(produto -> {
-                    return((produto.getPreco().compareTo(minimo) >= 0 && (produto.getPreco().compareTo(maximo) <= 0)));
-                })
+                .filter(produto -> ((produto.getPreco().compareTo(minimo) >= 0 && (produto.getPreco().compareTo(maximo) <= 0))))
                 .toList();
-        return produtos;
     }
 
     @Override

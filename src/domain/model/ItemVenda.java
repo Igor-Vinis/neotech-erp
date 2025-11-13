@@ -17,7 +17,7 @@ public class ItemVenda {
         } this.quantidade = quantidade;
     }
 
-    public ItemVenda(UUID idVenda, Produto produto, int quantidade, BigDecimal subtotal) {
+    public ItemVenda(UUID idVenda, Produto produto, int quantidade) {
         this.produto = produto;
         if (quantidade < 0){
             throw new IllegalArgumentException("A quantidade noã pode ser negativa.");
@@ -66,7 +66,7 @@ public class ItemVenda {
     }
 
     public String toCSV(){
-        return String.format("%s,%s,%d,%.2f",idVenda.toString(), produto.getId(), quantidade, getSubtotal().toString());
+        return String.format("%s,%s,%d",idVenda.toString(), produto.getId().toString(), quantidade);
     }
 
     @Override
