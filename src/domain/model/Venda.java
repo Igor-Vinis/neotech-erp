@@ -1,6 +1,7 @@
 package domain.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -83,7 +84,31 @@ public class Venda {
         }
     }
 
-    //TODO Método fromCSV
+    //TODO MétodotoCSV
+    public String toCSV(){
+        return String.format("%s,%s,%s,$s,%s", id, cliente.getId(),data.toString(), itens.toString(),total.toString());
+    }
 
+
+//    public static Venda fromString(String linha){
+//
+//        if(linha == null || linha.isEmpty()){
+//            throw new IllegalArgumentException("A linha não pode ser nula");
+//        }
+//        var partes = linha.split(",");
+//        if (partes.length != 5){
+//            throw new IllegalArgumentException("Linha má formatada, esperava 5 colunas, mas recebeu apenas: " + linha.length());
+//        }
+//        try {
+//            UUID id = partes[0].isEmpty() ? null : UUID.fromString(partes[0]);
+//            Cliente cliente = Cliente.fromCSV(partes[1]);
+//            LocalDateTime data = LocalDateTime.parse(partes[2]);
+//            Map<Produto, ItemVenda> itens = partes[3];
+//            BigDecimal total = new BigDecimal(partes[4]);
+//            return new Venda(id, cliente, data, itens, total);
+//        } catch (IllegalArgumentException e){
+//            throw new IllegalArgumentException("Erro ao parsear número na linha CSV: " + linha, e);
+//        }
+//    }
 
 }

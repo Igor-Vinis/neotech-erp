@@ -17,7 +17,7 @@ public class ItemVenda {
         } this.quantidade = quantidade;
     }
 
-    public ItemVenda(Produto produto, int quantidade, UUID idVenda){
+    public ItemVenda(UUID idVenda, Produto produto, int quantidade, BigDecimal subtotal) {
         this.produto = produto;
         if (quantidade < 0){
             throw new IllegalArgumentException("A quantidade noã pode ser negativa.");
@@ -65,12 +65,9 @@ public class ItemVenda {
                 '}';
     }
 
-    public String toCSV() {
-        return String.format("%s,%d,%.2f", produto.getNome(),quantidade,getSubtotal());
+    public String toCSV(){
+        return String.format("%s,%s,%d,%.2f",idVenda.toString(), produto.getId(), quantidade, getSubtotal().toString());
     }
-
-
-//    TODO Método fromCSV
 
     @Override
     public boolean equals(Object o) {

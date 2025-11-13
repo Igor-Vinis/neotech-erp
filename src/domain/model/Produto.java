@@ -83,7 +83,7 @@ public class Produto {
         try {
             UUID id = partes[0].isEmpty() ? null : UUID.fromString(partes[0]);
             String nome = partes[1];
-            BigDecimal preco = new BigDecimal(partes[2]); //Não sei parsear
+            BigDecimal preco = new BigDecimal(partes[2]);
             int estoque = Integer.parseInt(partes[3]);
             return new Produto(id, nome, preco, estoque);
         } catch (IllegalArgumentException e){
