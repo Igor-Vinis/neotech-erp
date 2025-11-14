@@ -13,14 +13,14 @@ public class ItemVenda {
     public ItemVenda(Produto produto, int quantidade) {
         this.produto = produto;
         if (quantidade < 0){
-            throw new IllegalArgumentException("A quantidade noã pode ser negativa.");
+            throw new IllegalArgumentException("A quantidade não pode ser negativa.");
         } this.quantidade = quantidade;
     }
 
     public ItemVenda(UUID idVenda, Produto produto, int quantidade) {
         this.produto = produto;
         if (quantidade < 0){
-            throw new IllegalArgumentException("A quantidade noã pode ser negativa.");
+            throw new IllegalArgumentException("A quantidade não pode ser negativa.");
         } this.quantidade = quantidade;
         this.idVenda = idVenda;
     }
