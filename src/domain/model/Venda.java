@@ -11,6 +11,7 @@ public class Venda {
     private final Cliente cliente;
     private BigDecimal total = BigDecimal.ZERO;
     private final Map<Produto, ItemVenda> itens = new LinkedHashMap<>();
+    private StatusVenda status;
 
 
     public Venda(Cliente cliente, LocalDateTime data) {
@@ -19,8 +20,9 @@ public class Venda {
         }
         this.cliente = cliente;
         this.data = data;
+        this.status = StatusVenda.CONCLUIDA;
     }
-    public Venda(UUID id, Cliente cliente, LocalDateTime data, Map<Produto, ItemVenda> itens, BigDecimal total) {
+    public Venda(UUID id, Cliente cliente, LocalDateTime data, Map<Produto, ItemVenda> itens, BigDecimal total, StatusVenda status) {
         if (cliente == null || data == null){
             throw new IllegalArgumentException("O cliente e a data não podem ser nulos.");
         }
@@ -29,6 +31,7 @@ public class Venda {
         this.data = data;
         this.total = total;
         this.itens.putAll(itens);
+        this.status = status;
     }
 
     public UUID getId() {
@@ -39,6 +42,13 @@ public class Venda {
         if (this.id != null){
             throw new IllegalArgumentException("Não é possível modificar o Id de uma compra já realizada.");
         } this.id = id;
+    }
+
+    public void cancelar() {
+        if(this.status == StatusVenda.CANCELADA){
+            throw new IllegalArgumentException("A compra já foi cancelada.");
+        }
+        this.status = StatusVenda.CANCELADA;
     }
 
     public LocalDateTime getData() {
@@ -85,7 +95,12 @@ public class Venda {
 
     //TODO MétodotoCSV
     public String toCSV(){
-        return String.format("%s,%s,%s,%s", id, cliente.getId(),data.toString(),total.toString());
+        return String.format("%s,%s,%s,%s,%s",
+                id.toString(),
+                cliente.getId().toString(),
+                data.toString(),
+                total.toString(),
+                status.toString());
     }
 
 }

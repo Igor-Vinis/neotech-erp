@@ -1,9 +1,6 @@
 package infrastructure.persistence;
 
-import domain.model.Cliente;
-import domain.model.ItemVenda;
-import domain.model.Produto;
-import domain.model.Venda;
+import domain.model.*;
 import domain.repository.ClienteRepository;
 import domain.repository.ProdutoRepository;
 import domain.repository.VendaRepository;
@@ -69,22 +66,15 @@ public class VendaFileDAO implements VendaRepository {
     }
 
     @Override
-    public void deletar(UUID id) {
-        var linhasVendas = filerManager.lerTodasLinhas(pathVenda);
-        var novasListaVendas = linhasVendas.stream()
-                .filter(l ->{
-                    var partes = l.split(",");
-                    return (!Objects.equals(UUID.fromString(partes[0]), id));
-                }).toList();
-        filerManager.escreverLinhas(pathVenda, novasListaVendas);
-
-        var linhasItens = filerManager.lerTodasLinhas(pathItens);
-        var novaListaItens = linhasItens.stream()
-                .filter(l -> {
-                    var partes = l.split(",");
-                    return (!Objects.equals(UUID.fromString(partes[0]), id));
-                }).toList();
-        filerManager.escreverLinhas(pathItens, novaListaItens);
+    public boolean existeVendaParaCliente(UUID idCliente) {
+        var linhas = filerManager.lerTodasLinhas(pathVenda);
+        for (var linha : linhas){
+            var partes = linha.split(",");
+            if (Objects.equals(idCliente, UUID.fromString(partes[1]))){
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -97,8 +87,9 @@ public class VendaFileDAO implements VendaRepository {
                     var idCliente = UUID.fromString(partes[1]);
                     var data = LocalDateTime.parse(partes[2]);
                     var total = new BigDecimal(partes[3]);
+                    StatusVenda status = StatusVenda.valueOf(partes[4]);
                     Cliente cliente = clienteRepo.buscarPorId(idCliente).orElseThrow(() -> new IllegalArgumentException("Cliente inválido!"));
-                    return new Venda(idVenda, cliente, data, new LinkedHashMap<>(),total);
+                    return new Venda(idVenda, cliente, data, new LinkedHashMap<>(),total, status);
                 }).toList();
     }
 
@@ -119,7 +110,6 @@ public class VendaFileDAO implements VendaRepository {
         if (linhaVendaEncontrada == null){
                 return Optional.empty();
             }
-
 //        ACHAR OS ITENS:
         Map<Produto, ItemVenda> mapaDeItens = new LinkedHashMap<>();
         var linhasItens = filerManager.lerTodasLinhas(pathItens);
@@ -143,10 +133,11 @@ public class VendaFileDAO implements VendaRepository {
         var idCliente = UUID.fromString(partesVenda[1]);
         var data = LocalDateTime.parse(partesVenda[2]);
         var total = new BigDecimal(partesVenda[3]);
+        var status = StatusVenda.valueOf(partesVenda[4]);
 
         Cliente cliente = clienteRepo.buscarPorId(idCliente).orElseThrow(() -> new IllegalArgumentException("Cliente inválido!"));
         //retornar a venda
-        var vendaCompleta = new Venda(idVenda, cliente, data, mapaDeItens, total);
+        var vendaCompleta = new Venda(idVenda, cliente, data, mapaDeItens, total, status);
         return Optional.of(vendaCompleta);
     }
 }
